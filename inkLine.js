@@ -31,35 +31,35 @@ class InkLine {
     this.splatterP = splatterP
     this.maxSplats = maxSplats
   }
-  
-  setWeight(weight){
-    this.maxWeight = weight  
+
+  setWeight(weight) {
+    this.maxWeight = weight
   }
-  
-  setDrawFunction(f){
+
+  setDrawFunction(f) {
     this.drawFunction = f;
   }
-  
-  setStops(n){
+
+  setStops(n) {
     this.addStops = n;
   }
-  
+
   setShade(shade, direction) {
     this.shade = 1;
     this.shadeDirections.push(direction)
   }
-  
-  setType(fillType){
+
+  setType(fillType) {
     this.fillType = fillType;
   }
-  
-  setPoints(pointsArray){
+
+  setPoints(pointsArray) {
     this.points = pointsArray.length;
     this.pointsArray = pointsArray
   }
-  
-  setPointsFunction(x1, y1, x2, y2, numPoints){ 
-    this.points = this.drawFunction.formula(x1,y1, x2, y2, numPoints);
+
+  setPointsFunction(x1, y1, x2, y2, numPoints) {
+    this.points = this.drawFunction.formula(x1, y1, x2, y2, numPoints);
   }
 
   drawLine(x1, y1, x2, y2, count) {
@@ -67,13 +67,13 @@ class InkLine {
     let totalColors = this.colors.length;
     let strokeLength = 5000
     let points = this.points
-    if(this.points == null){
-      let pointsArray = this.drawFunction.formula(x1,y1, x2, y2, points);
+    if (this.points == null) {
+      let pointsArray = this.drawFunction.formula(x1, y1, x2, y2, points);
       this.points = pointsArray;
     }
-    
+
     let displace = 1 - this.splitP;
-    
+
     let endBubbleProb = this.endBubbleP; // // turn into a var with setter
     let bubbleCheck = (Math.random(1) < endBubbleProb);
     let splatterProb = this.splatterP; // turn into a var with setter
@@ -83,8 +83,8 @@ class InkLine {
 
     // console.log(this.splats)
     let splats = Math.ceil(random(1, this.maxSplats)); // turn into a var with setter
-    
-    
+
+
     let weightF = (n, e) => {
       let weight = map(n, 0, 1, 0, this.maxWeight)
       return ((2 * weight + random(strokeLength)) / width) * e;
@@ -99,20 +99,20 @@ class InkLine {
 
     let showStops = this.addStops;
     // console.log(c1, c2)
-    
+
     let shade = 1;
     // this.shade = 1;
-    
+
     console.log(this.pointsArray, points)
 
     for (let n = 0; n < points; n += 1) {
-      if(n < count){
+      if (n < count) {
         let check = Math.random(1);
-        
+
         let plotPoint = this.pointsArray[n]
         let plotX = plotPoint.x
         let plotY = plotPoint.y
-        
+
         let inter = map(n, 0, points, 0, 1);
         let c = lerpColor(c1, c2, inter);
         fill(c);
@@ -121,20 +121,20 @@ class InkLine {
         if (willSplatter && n > splatterDistance) {
           let totalPointsLeft = points - splatterDistance;
           let cuts = Math.floor(totalPointsLeft / splats);
-          if (n%cuts == 0) {
+          if (n % cuts == 0) {
 
             let displacement = displaceF(n, this.displacement);
             let weight = weightF(inter, 0.2);
 
             ellipse(
-              plotX + displacement / 2,
-              plotY + displacement / 2,
-              weight,
-              weight
+              plotX + displacement / 8,
+              plotY + displacement / 8,
+              weight + displacement / 8,
+              weight + displacement / 8
             );
-            
 
-            if(this.shade){
+
+            if (this.shade) {
               stroke(c)
               strokeWeight(weight)
               let shade = map(n, 0, points, 0, 10)
@@ -146,16 +146,21 @@ class InkLine {
           let weight = weightF(inter, 0.15);
           let displacement = displaceF(n, this.displacement);
           ellipse(
-            plotX + displacement / 2,
-            plotY + displacement / 2,
-            weight,
-            weight
+            plotX + displacement / 8,
+            plotY + displacement / 8,
+            weight + displacement / 8,
+            weight + displacement / 8
           );
-          
+
         }
         if (bubbleCheck && n == points - 1 && !willSplatter) {
           let weight = weightF(inter, 0.35);
-          ellipse(plotX, plotY, weight, weight);
+          ellipse(
+            plotX + displacement / 8,
+            plotY + displacement / 8,
+            weight + displacement / 8,
+            weight + displacement / 8
+          );
           // rect(
           //     plotX + displacement / 2,
           //     plotY + displacement / 2,
@@ -164,92 +169,92 @@ class InkLine {
           //   );
         }
 
-        if(showStops != 0 && n == 0){
+        if (showStops != 0 && n == 0) {
           let weight = weightF(inter, 0.35);
           ellipse(plotX, plotY, weight, weight);
           textAlign(CENTER, TOP)
-          if(this.drawFunction.title == 'line' || this.drawFunction.title == 'wave'){
-            if(x1 == x2 && y1 < y2){
+          if (this.drawFunction.title == 'line' || this.drawFunction.title == 'wave') {
+            if (x1 == x2 && y1 < y2) {
               text("a", plotX, plotY - 20)
             }
-            
-            else if(y1 == y2 && x2 > x1){
+
+            else if (y1 == y2 && x2 > x1) {
               text("a", plotX - 20, plotY)
             }
-            
-            else if(y1 == y2 && x2 < x1){
+
+            else if (y1 == y2 && x2 < x1) {
               text("a", plotX + 20, plotY)
             }
-            
-            else{
+
+            else {
               text("a", plotX, plotY + 10)
             }
-            
-            
-            
+
+
+
           }
-          else{
+          else {
             text("a", plotX, plotY + 10)
           }
         }
 
-        if(showStops != 0 && n == points - 1){
+        if (showStops != 0 && n == points - 1) {
           let weight = weightF(inter, 0.35);
           ellipse(plotX, plotY, weight, weight);
           textAlign(CENTER, TOP)
-          if (this.drawFunction.title == 'circle' ){
-            text("b", plotX, plotY + 30)  
+          if (this.drawFunction.title == 'circle') {
+            text("b", plotX, plotY + 30)
           }
-          else if (this.drawFunction.title == 'spiral'){
-            text("b", plotX, plotY - 25)  
+          else if (this.drawFunction.title == 'spiral') {
+            text("b", plotX, plotY - 25)
           }
-          else if(this.drawFunction.title == 'line' || this.drawFunction.title == 'wave'){
+          else if (this.drawFunction.title == 'line' || this.drawFunction.title == 'wave') {
             // console.log("We're in line") 
-            if(x1 == x2){
-               if(y2 < y1){
-                 text("b", plotX, plotY - 20) 
-               }
-              
-               else{
-                 text("b", plotX, plotY + 10) 
-               }
-             }
-            
-            else if( y1 == y2){
-              if(x1>x2){
-                text("b", plotX - 20, plotY) 
+            if (x1 == x2) {
+              if (y2 < y1) {
+                text("b", plotX, plotY - 20)
               }
-              else{
-                text("b", plotX + 20, plotY) 
+
+              else {
+                text("b", plotX, plotY + 10)
               }
             }
-            
-            else if (y2 > y1){
-              text("b", plotX, plotY - 10) 
+
+            else if (y1 == y2) {
+              if (x1 > x2) {
+                text("b", plotX - 20, plotY)
+              }
+              else {
+                text("b", plotX + 20, plotY)
+              }
+            }
+
+            else if (y2 > y1) {
+              text("b", plotX, plotY - 10)
             }
           }
-          else{
-            text("b", plotX, plotY + 10)  
+          else {
+            text("b", plotX, plotY + 10)
           }
-          
+
           // noLoop();
         }
       }
     }
   }
-  
+
   animateLine(x1, y1, x2, y2, countStart, countEnd) {
     ellipseMode(CENTER);
     let totalColors = this.colors.length;
     let strokeLength = 1
     let points = this.points
-    if(this.points == null){
-      let pointsArray = this.drawFunction.formula(x1,y1, x2, y2, points);
+    if (this.points == null) {
+      let pointsArray = this.drawFunction.formula(x1, y1, x2, y2, points);
       this.points = pointsArray;
     }
-    
+
     let displace = 1 - this.splitP;
-    
+
     let endBubbleProb = this.endBubbleP; // // turn into a var with setter
     let bubbleCheck = (Math.random(1) < endBubbleProb);
     let splatterProb = this.splatterP; // turn into a var with setter
@@ -259,8 +264,8 @@ class InkLine {
 
     // console.log(this.splats)
     let splats = Math.ceil(random(1, this.maxSplats)); // turn into a var with setter
-    
-    
+
+
     let weightF = (n, e) => {
       let weight = map(n, 0, 1, 0, this.maxWeight)
       return ((2 * weight + random(strokeLength)) / width) * e;
@@ -270,25 +275,44 @@ class InkLine {
       return noise(n) * d;
     };
 
-    let c1 = color(this.colors[0][0], this.colors[0][1], this.colors[0][2]);
-    let c2 = color(this.colors[1][0], this.colors[1][1], this.colors[1][2]);
+    let colors = [];
+    let colorsLength = this.colors.length
+    for (let c = 0; c < colorsLength; c++) {
+      let c1 = null;
+      c1 = color(this.colors[c]);
+      colors.push(c1);
+    }
+
+    let c1 = null;
+    let c2 = null;
 
     let showStops = this.addStops;
+
     
-    let shade = 1;
-    
-  // console.log(this.pointsArray)
+
+    // console.log(this.pointsArray)
     beginShape();
     for (let n = countStart; n < countEnd; n += 1) {
-      if(n < points){
+      if (n < points) {
         let check = Math.random(1);
         let plotPoint = this.pointsArray[n]
         // console.log(plotPoint)
         let plotX = plotPoint.x
         let plotY = plotPoint.y
-        
-        let inter = map(n, 0, points, 0, 1);
-        let c = lerpColor(c1, c2, inter);
+
+        let colorInter = map(n, 0, points, 0, colorsLength)
+
+        c1 = colors[Math.floor(colorInter)]
+        c2 = colors[Math.ceil(colorInter)]
+
+        if (c2 == undefined) {
+          c2 = c1;
+        }
+
+
+        let fixedInter = map(colorInter, Math.floor(colorInter), Math.ceil(colorInter), 0, 1, true);
+
+        let c = lerpColor(c1, c2, fixedInter);
         fill(c);
         noStroke()
         strokeWeight(1)
@@ -298,19 +322,19 @@ class InkLine {
         if (willSplatter && n > splatterDistance) {
           let totalPointsLeft = points - splatterDistance;
           let cuts = Math.floor(totalPointsLeft / splats);
-          if (n%cuts == 0) {
+          if (n % cuts == 0) {
 
             let displacement = displaceF(n, this.displacement);
-            let weight = weightF(inter, 0.2);
+            let weight = weightF(fixedInter, 0.2);
             vertex(plotX + displacement / 2, plotY + displacement / 2)
             ellipse(
-              plotX + displacement / 2,
-              plotY + displacement / 2,
-              weight,
-              weight
+              plotX + displacement / 8,
+              plotY + displacement / 8,
+              weight + displacement / 2,
+              weight + displacement / 2
             );
 
-            if(this.shade){
+            if (this.shade) {
               stroke(c)
               strokeWeight(weight)
               let shade = map(n, 0, points, 0, 10)
@@ -319,14 +343,14 @@ class InkLine {
           }
         }
         else if (check > this.splitP) {
-          let weight = weightF(inter, 0.15);
+          let weight = weightF(fixedInter, 0.15);
           let displacement = displaceF(n, this.displacement);
           vertex(plotX + displacement / 2, plotY + displacement / 2)
           ellipse(
-            plotX + displacement / 2,
-            plotY + displacement / 2,
-            weight,
-            weight
+            plotX + displacement / 8,
+            plotY + displacement / 8,
+            weight + displacement / 2,
+            weight + displacement / 2
           );
           // rect(
           //     plotX + displacement / 2,
@@ -334,95 +358,95 @@ class InkLine {
           //     3,
           //     1
           //   );
-          if(this.shade && n%12 ==0){
-            console.log("In Shade")  
+          if (this.shade && n % 12 == 0) {
+            console.log("In Shade")
             stroke(c)
-              strokeWeight(weight)
-              // let shade = map(plotY, height/2, 3*height/4, 1, 100, true) + random(-10, 10)
-              // line(plotX + shade, plotY - shade, plotX, plotY)
-              // line(plotX - shade, plotY - shade, plotX, plotY)
-            }
+            strokeWeight(weight)
+            // let shade = map(plotY, height/2, 3*height/4, 1, 100, true) + random(-10, 10)
+            // line(plotX + shade, plotY - shade, plotX, plotY)
+            // line(plotX - shade, plotY - shade, plotX, plotY)
+          }
         }
         if (bubbleCheck && n == points - 1 && !willSplatter) {
-          let weight = weightF(inter, 0.35);
+          let weight = weightF(fixedInter, 0.35);
           ellipse(plotX, plotY, weight, weight);
         }
 
-        if(showStops != 0 && n == 0){
-          let weight = weightF(inter, 0.35);
+        if (showStops != 0 && n == 0) {
+          let weight = weightF(fixedInter, 0.35);
           ellipse(plotX, plotY, weight, weight);
           textAlign(CENTER, TOP)
-          if(this.drawFunction.title == 'line' || this.drawFunction.title == 'wave'){
-            if(x1 == x2 && y1 < y2){
+          if (this.drawFunction.title == 'line' || this.drawFunction.title == 'wave') {
+            if (x1 == x2 && y1 < y2) {
               text("a", plotX, plotY - 20)
             }
-            
-            else if(y1 == y2 && x2 > x1){
+
+            else if (y1 == y2 && x2 > x1) {
               text("a", plotX - 20, plotY)
             }
-            
-            else if(y1 == y2 && x2 < x1){
+
+            else if (y1 == y2 && x2 < x1) {
               text("a", plotX + 20, plotY)
             }
-            
-            else{
+
+            else {
               text("a", plotX, plotY + 10)
             }
-            
-            
-            
+
+
+
           }
-          else{
+          else {
             text("a", plotX, plotY + 10)
           }
         }
 
-        if(showStops != 0 && n == points - 1){
-          let weight = weightF(inter, 0.35);
+        if (showStops != 0 && n == points - 1) {
+          let weight = weightF(fixedInter, 0.35);
           ellipse(plotX, plotY, weight, weight);
           textAlign(CENTER, TOP)
-          if (this.drawFunction.title == 'circle' ){
-            text("b", plotX, plotY + 30)  
+          if (this.drawFunction.title == 'circle') {
+            text("b", plotX, plotY + 30)
           }
-          else if (this.drawFunction.title == 'spiral'){
-            text("b", plotX, plotY - 25)  
+          else if (this.drawFunction.title == 'spiral') {
+            text("b", plotX, plotY - 25)
           }
-          else if(this.drawFunction.title == 'line' || this.drawFunction.title == 'wave'){
+          else if (this.drawFunction.title == 'line' || this.drawFunction.title == 'wave') {
             // console.log("We're in line") 
-            if(x1 == x2){
-               if(y2 < y1){
-                 text("b", plotX, plotY - 20) 
-               }
-              
-               else{
-                 text("b", plotX, plotY + 10) 
-               }
-             }
-            
-            else if( y1 == y2){
-              if(x1>x2){
-                text("b", plotX - 20, plotY) 
+            if (x1 == x2) {
+              if (y2 < y1) {
+                text("b", plotX, plotY - 20)
               }
-              else{
-                text("b", plotX + 20, plotY) 
+
+              else {
+                text("b", plotX, plotY + 10)
               }
             }
-            
-            else if (y2 > y1){
-              text("b", plotX, plotY - 10) 
+
+            else if (y1 == y2) {
+              if (x1 > x2) {
+                text("b", plotX - 20, plotY)
+              }
+              else {
+                text("b", plotX + 20, plotY)
+              }
+            }
+
+            else if (y2 > y1) {
+              text("b", plotX, plotY - 10)
             }
           }
-          else{
-            text("b", plotX, plotY + 10)  
+          else {
+            text("b", plotX, plotY + 10)
           }
-          
+
           // noLoop();
         }
       }
     }
     endShape();
   }
-  
+
 }
 
 
