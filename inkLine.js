@@ -313,10 +313,13 @@ class InkLine {
         let fixedInter = map(colorInter, Math.floor(colorInter), Math.ceil(colorInter), 0, 1, true);
 
         let c = lerpColor(c1, c2, fixedInter);
-        fill(c);
-        noStroke()
-        strokeWeight(1)
+        // fill(c);
         stroke(c);
+        noFill();
+        stroke(c);
+        
+        strokeWeight(2)
+
         weight = 10;
 
         if (willSplatter && n > splatterDistance) {
@@ -346,12 +349,7 @@ class InkLine {
           let weight = weightF(fixedInter, 0.15);
           let displacement = displaceF(n, this.displacement);
           vertex(plotX + displacement / 2, plotY + displacement / 2)
-          ellipse(
-            plotX + displacement / 8,
-            plotY + displacement / 8,
-            weight + displacement / 2,
-            weight + displacement / 2
-          );
+          
           // rect(
           //     plotX + displacement / 2,
           //     plotY + displacement / 2,

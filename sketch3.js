@@ -47,7 +47,9 @@ let palettes = [
     ["#FF9933", "#FFFFFF", "#138808", "#000080"],
     ["#005CBF", "#FFCD00"],
     ["#21468B", "#FFFFFF", "#AE1C28"],
-    ["#008C45", "#FFFFFF", "#CD212A"]
+    ["#008C45", "#FFFFFF", "#CD212A"],
+    ["#DA291C", "#000000"],
+
 ];
 
 let sourceSerif = null;
@@ -81,6 +83,7 @@ let languages = [
     { "Language": "Swedish", "Translation": "Jag älskar dig" },
     { "Language": "Dutch", "Translation": "Ik hou van jou" },
     { "Language": "Italian", "Translation": "Ti amo" },
+    { "Language": "Albanian", "Translation": "Të dua" },
 
 
     //     {"Language": "Swahili", "Translation": "Nakupenda"},
@@ -125,15 +128,18 @@ function preload() {
     }
 }
 
+let canvasHeight = 0;
 function setup() {
     //   shuffleArray(languages);
     frameRate(60);
     pixelDensity(1);
     createCanvas(windowWidth, windowHeight);
+    canvasHeight = windowHeight;
     watercolorLayer = createGraphics(1200, 800);
     totalLines = languages.length;
     for (let i = 0; i < totalLines; i++) {
-        let ink = new InkLine(defaultPalette, null);
+        // let ink = new InkLine(defaultPalette, null);
+        let ink = new InkLine(palettes[i], null);
         ink.setSplatter(1, 0.4 + 1 / 100, 1);
         ink.setEndBubble(0.0);
         ink.setAnalogueness(0.2, 1);
@@ -145,6 +151,8 @@ function setup() {
     calculateGrid();
     background(bgColor[0], bgColor[1], bgColor[2]);
 }
+
+
 
 
 
@@ -165,12 +173,15 @@ function shuffleArray(array) {
     return array;
 }
 
-let textOffset = 175
-let minGridWidth = 300; // Minimum cell width
-let minGridHeight = 400; // Minimum cell height
+let textOffset = 5
+let minGridWidth = 100; // Minimum cell width
+let minGridHeight = 0// Minimum cell height
 let gridWidth = minGridWidth; // Width of each cell
 let gridHeight = minGridHeight; // Height of each cell
 let rows, cols = 0; // Number of rows and columns in our system
+let textBuffer = 10;
+let fontSize = 18;
+let fontSize2 = 0.8 * fontSize;
 
 function draw() {
     if (showBuffer && audioBuffers[languages.length - 1] != null && maxAmplitudes != []) {
@@ -179,7 +190,6 @@ function draw() {
         for (let gridY = 0; gridY < rows; gridY++) {
             for (let gridX = 0; gridX < cols; gridX++) {
 
-                // LMAOOOO this was not updated for a while.
                 let bufferLength = audioBuffers[(gridX + (cols * gridY)) % audioBuffers.length].length;
                 let data = audioBuffers[((gridX + (cols * gridY)) % audioBuffers.length)].getChannelData(0);
 
@@ -196,7 +206,7 @@ function draw() {
                 for (let i = 0; i < bufferLength; i += inc) {
                     let finalX, finalY;
 
-                    let amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight / 3, gridHeight / 3, true);
+                    let amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight / 25, gridHeight / 25, true);
                     // Normalize the amplitude based on the maximum amplitude
 
                     finalX = offsetX - gridWidth / 2 + map(i, 0, bufferLength, 0, gridWidth)
@@ -204,7 +214,7 @@ function draw() {
                     linePoints.push({ x: finalX, y: finalY });
 
 
-                    let scalar = 5;
+                    let scalar = 2;
 
                     let t = map(i, 0, bufferLength, 0, TWO_PI); //
 
@@ -225,17 +235,26 @@ function draw() {
                 // Add this heart's points to the main array
 
                 // Draw text box under each heart
+                // console.log(lines[(gridX + (cols * gridY)) % (languages.length)].colors)
                 fill(lines[(gridX + (cols * gridY)) % (languages.length)].colors[0]);
                 stroke(0)
                 strokeWeight(1)
-                textSize(20);
-                textAlign(CENTER, BOTTOM);
-                text(languages[(gridX + (cols * gridY)) % (languages.length)].Translation, offsetX, offsetY + textOffset);
-                textSize(16);
-                textAlign(CENTER, TOP);
-                text(languages[(gridX + (cols * gridY)) % (languages.length)].Language, offsetX, offsetY + textOffset);
+                textSize(fontSize);
+                textAlign(LEFT, BOTTOM);
+                // text(languages[(gridX + (cols * gridY)) % (languages.length)].Translation, textBuffer, offsetY - textOffset/2);
+                // textSize(fontSize2);
+                // textAlign(LEFT, TOP);
+                // text(languages[(gridX + (cols * gridY)) % (languages.length)].Language, textBuffer, offsetY + textOffset*2);
             }
         }
+
+        fill("#4A5759");
+        textSize(fontSize * 1.25);
+        textAlign(LEFT, BOTTOM);
+        text("Love's", textBuffer, height - 40);
+        textAlign(LEFT, TOP);
+        textSize(fontSize2 * 1.25);
+        text("Languages", textBuffer, height - 40);
 
         showBuffer = false;
     }
@@ -245,7 +264,7 @@ function draw() {
         currentLine = lines[i];
         currentLine.setPoints(allHeartPoints[i])
         currentLine.setAnalogueness(0.1, 20);
-        currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
+        // currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
         currentLine.setPoints(allLinePoints[i])
         currentLine.setAnalogueness(0.1, 1);
         currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
@@ -254,6 +273,8 @@ function draw() {
     if (redrawVisual) {
         redrawVisualForArea(redrawVisualArea, redrawVisualIndex);
     }
+
+
 }
 
 function scaledHeartShape(t, scale, offsetX, offsetY) {
@@ -273,15 +294,19 @@ let redrawVisualArea = null;
 let redrawFrameText = true;
 
 function calculateGrid() {
-    cols = Math.floor(windowWidth / minGridHeight);
-    console.log(cols)
-    rows = Math.floor(totalLines / cols);
+
+    rows = 1
+    cols = totalLines
+    minGridHeight = (0.95 * canvasHeight) / rows;
     // Adjust cell size if the window size doesn't fit perfectly
     gridWidth = windowWidth / cols;
     gridHeight = minGridHeight
 
-    canvasHeight = rows * gridHeight; 
-    resizeCanvas(windowWidth, canvasHeight);
+    canvasHeight = rows * gridHeight;
+    console.log(canvasHeight)
+
+    // resizeCanvas(windowWidth, windowHeight);
+    // background(bgColor[0], bgColor[1], bgColor[2]);
 
 
     // Additional adjustments if needed...
@@ -290,12 +315,12 @@ function calculateGrid() {
 function redrawVisualForArea(area, index) {
     let totalFrames = allLinePoints[index].length / inc;
     let ratio = totalFrames / playbackLengths[index]
-    frameRate(ratio+2)
+    frameRate(ratio + 2)
     currentLine = lines[index];
     currentLine.colors = palettes[index % palettes.length]
     currentLine.setPoints(allHeartPoints[index])
     currentLine.setAnalogueness(0.1, 20);
-    currentLine.animateLine(null, null, null, null, redrawVisualFrames * inc, (redrawVisualFrames + 1) * inc)
+    // currentLine.animateLine(null, null, null, null, redrawVisualFrames * inc, (redrawVisualFrames + 1) * inc)
     currentLine.setPoints(allLinePoints[index])
     currentLine.setAnalogueness(0.1, 1);
     currentLine.animateLine(null, null, null, null, redrawVisualFrames * inc, (redrawVisualFrames + 1) * inc)
@@ -304,12 +329,13 @@ function redrawVisualForArea(area, index) {
     if (redrawFrameText) {
         fill(lines[index].colors[0]);
         strokeWeight(1)
-        textSize(20);
-        textAlign(CENTER, BOTTOM);
-        text(languages[index].Translation, area.x + area.width / 2, area.y + area.height / 2 + textOffset);
-        textSize(16);
-        textAlign(CENTER, TOP);
-        text(languages[index].Language, area.x + area.width / 2, area.y + area.height / 2 + textOffset);
+        textSize(fontSize);
+        textAlign(LEFT, BOTTOM);
+        // text(languages[index].Translation, textBuffer, area.y + area.height / 2 - textOffset);
+        // textSize(fontSize2);
+        // textAlign(LEFT, TOP);
+        // text(languages[index].Language, textBuffer, area.y + area.height / 2 - textOffset);
+
         redrawFrameText = false;
     }
     if ((redrawVisualFrames * inc) >= allLinePoints[index].length) {
@@ -338,7 +364,6 @@ function mouseClicked() {
 
 function windowResized() {
     calculateGrid();
-    background(bgColor[0], bgColor[1], bgColor[2]);
     frames = 0;
     showBuffer = true;
     allHeartPoints = [];
