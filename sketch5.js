@@ -167,21 +167,24 @@ function heartShape(t) {
 
 function showAbout() {
     background(bgColor[0], bgColor[1], bgColor[2]);
-    textSize(20);
+    textSize(35);
     textAlign(CENTER, CENTER);
     fill("#4A5759");
     text("Love's Languages", width / 2, height / 2);
-    textSize(15);
+    textSize(20);
     textAlign(CENTER, CENTER);
     fill("#4A5759");
     text("A generative and data art piece by Pete Cybriwsky", width / 2, height / 2 + 30);
 
-    textSize(15);
+    
     textAlign(CENTER, CENTER);
     fill("#4A5759");
-    text("This piece captures our universal language, love. It features a heart, meticulously crafted from the overlapping soundwaves of 'I love you' voiced in 26 languages. These heartfelt expressions, contributed by family, friends, and even some kind-hearted strangers, echo the rich spectrum of love—from the tender bonds of family to the deep stirrings of romantic affection. Each soundwave is infused with colors drawn from the national flags of the countries where these languages resonate, weaving a vibrant tapestry of global unity and affection.", 100, height / 2 + 100, width - 200);
+    text("This piece captures our universal language, love. It features a heart, meticulously crafted from the overlapping soundwaves of 'I love you' voiced in 26 languages. These heartfelt expressions, contributed by family, friends, and even some kind-hearted strangers, echo the rich spectrum of love—from the tender bonds of family to the deep stirrings of romantic affection. Each soundwave is infused with colors drawn from the national flags of the countries where these languages resonate, weaving a vibrant tapestry of global unity and affection.", 100, height / 2 + 125, width - 200);
 
-    text("I hope to explore this piece further, adding more languages and exploring the unique flavors of different dialects and voices. It's been a real joy to discover how love is expressed around the world and to see these expressions come to life in this piece.", 100, height / 2 + 200, width - 200);
+    text("I hope to explore this piece further, adding more languages and exploring the unique shapes of different dialects and voices. It's been a real joy to discover how love is expressed around the world and to see these expressions come to life in this piece.", 100, height / 2 + 250, width - 200);
+
+    text("This piece will be around 2 minutes and 30 seconds long, and you may turn on your sound to hear the audio playback.", 100, height / 2 + 325, width - 200);
+
 
     textSize(35);
     text("Click anywhere to begin", width / 2, height - 100)
@@ -400,8 +403,6 @@ function redrawVisualForArea(area, index) {
             }
             textSize(fontSize);
             textAlign(CENTER, BOTTOM);
-            // let offsetY = gridHeight * gridY + gridHeight / 2 + indiOffsetY;                  - textOffset / 2 + gridHeight / 2
-            //             let areaY = gridHeight * gridY + gridHeight / 2 + indiOffsetY - textOffset / 2 + gridHeight / 2
 
             text(languages[i].Translation, clickableAreas[i].x + gridWidth / 2, clickableAreas[i].y + gridHeight / 2 - textOffset / 2 + gridHeight / 2);
             textSize(fontSize2);
