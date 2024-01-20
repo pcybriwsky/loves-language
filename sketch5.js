@@ -183,7 +183,7 @@ function showAbout() {
 
     text("I hope to explore this piece further, adding more languages and exploring the unique shapes of different dialects and voices. It's been a real joy to discover how love is expressed around the world and to see these expressions come to life in this piece.", 100, height / 2 + 250, width - 200);
 
-    text("This piece will be around 2 minutes and 30 seconds long, and if on desktop, you may turn on your sound to hear the audio playback. For the best experience, use Google Chrome", 100, height / 2 + 325, width - 200);
+    text("The piece is about 2 minutes and 30 seconds long, and if on desktop, you may turn on your sound to hear the audio playback. For the best experience, use Google Chrome", 100, height / 2 + 325, width - 200);
 
 
     textSize(35);
