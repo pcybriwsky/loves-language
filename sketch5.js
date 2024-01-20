@@ -441,28 +441,29 @@ function finalVisual() {
 }
 
 function mouseClicked() {
+    
     if (showAboutInfo) {
         showAboutInfo = false;
         background(bgColor[0], bgColor[1], bgColor[2]);
     }
-    else {
-        // for (let area of clickableAreas) {
-        //     if (mouseX > area.x && mouseX < area.x + area.width &&
-        //         mouseY > area.y && mouseY < area.y + area.height) {
-        //         // Play the corresponding audio file
-        //         waitFrames = 150;
-        //         fill(bgColor[0], bgColor[1], bgColor[2])
-        //         noStroke()
-        //         // rect(area.x, area.y, area.width, area.height);
-        //         audioFiles[area.index].play();
-        //         redrawVisual = true;
-        //         redrawVisualIndex = area.index;
-        //         redrawVisualArea = area;
-        //         redrawVisualFrames = 0;
-        //         redrawFrameText = true
-        //         break; // Stop checking further if one match is found
-        //     }
-        // }
+    else if (frames > 100 && redrawVisual == false && showFinalVisual == false){
+        for (let area of clickableAreas) {
+            if (mouseX > area.x && mouseX < area.x + area.width &&
+                mouseY > area.y && mouseY < area.y + area.height) {
+                // Play the corresponding audio file
+                waitFrames = 150;
+                fill(bgColor[0], bgColor[1], bgColor[2])
+                noStroke()
+                // rect(area.x, area.y, area.width, area.height);
+                audioFiles[area.index].play();
+                redrawVisual = true;
+                redrawVisualIndex = area.index;
+                redrawVisualArea = area;
+                redrawVisualFrames = 0;
+                redrawFrameText = true
+                break; // Stop checking further if one match is found
+            }
+        }
     }
 }
 
@@ -478,6 +479,7 @@ function windowResized() {
     allHeartPoints = [];
     allLinePoints = []
     clickableAreas = [];
+    background(bgColor[0], bgColor[1], bgColor[2]);
     draw();
 }
 
