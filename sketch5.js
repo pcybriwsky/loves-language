@@ -170,11 +170,11 @@ function showAbout() {
     textSize(35);
     textAlign(CENTER, CENTER);
     fill("#4A5759");
-    text("Love's Languages", width / 2, height / 2);
+    text("Love's Languages", width / 2, height / 2 - 50);
     textSize(20);
     textAlign(CENTER, CENTER);
     fill("#4A5759");
-    text("A generative and data art piece by Pete Cybriwsky", width / 2, height / 2 + 30);
+    text("A generative and data art piece by Pete Cybriwsky", width / 2, height / 2 - 10);
 
     
     textAlign(CENTER, CENTER);
