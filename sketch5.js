@@ -183,7 +183,7 @@ function showAbout() {
 
     text("I hope to explore this piece further, adding more languages and exploring the unique shapes of different dialects and voices. It's been a real joy to discover how love is expressed around the world and to see these expressions come to life in this piece.", 100, height / 2 + 250, width - 200);
 
-    text("This piece will be around 2 minutes and 30 seconds long, and you may turn on your sound to hear the audio playback.", 100, height / 2 + 325, width - 200);
+    text("This piece will be around 2 minutes and 30 seconds long, and if on desktop, you may turn on your sound to hear the audio playback. For the best experience, use Google Chrome", 100, height / 2 + 325, width - 200);
 
 
     textSize(35);
@@ -446,23 +446,23 @@ function mouseClicked() {
         background(bgColor[0], bgColor[1], bgColor[2]);
     }
     else {
-        for (let area of clickableAreas) {
-            if (mouseX > area.x && mouseX < area.x + area.width &&
-                mouseY > area.y && mouseY < area.y + area.height) {
-                // Play the corresponding audio file
-                waitFrames = 150;
-                fill(bgColor[0], bgColor[1], bgColor[2])
-                noStroke()
-                // rect(area.x, area.y, area.width, area.height);
-                audioFiles[area.index].play();
-                redrawVisual = true;
-                redrawVisualIndex = area.index;
-                redrawVisualArea = area;
-                redrawVisualFrames = 0;
-                redrawFrameText = true
-                break; // Stop checking further if one match is found
-            }
-        }
+        // for (let area of clickableAreas) {
+        //     if (mouseX > area.x && mouseX < area.x + area.width &&
+        //         mouseY > area.y && mouseY < area.y + area.height) {
+        //         // Play the corresponding audio file
+        //         waitFrames = 150;
+        //         fill(bgColor[0], bgColor[1], bgColor[2])
+        //         noStroke()
+        //         // rect(area.x, area.y, area.width, area.height);
+        //         audioFiles[area.index].play();
+        //         redrawVisual = true;
+        //         redrawVisualIndex = area.index;
+        //         redrawVisualArea = area;
+        //         redrawVisualFrames = 0;
+        //         redrawFrameText = true
+        //         break; // Stop checking further if one match is found
+        //     }
+        // }
     }
 }
 
