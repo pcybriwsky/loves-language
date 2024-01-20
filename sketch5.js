@@ -64,7 +64,7 @@ let languages = [
     { "Language": "Tagalog", "Translation": "Mahal kita" },
     { "Language": "Farsi", "Translation": "دوستت دارم" },
     { "Language": "English", "Translation": "I love you" },
-    { "Language": "Spanish", "Translation": "te quiero" },
+    { "Language": "Spanish", "Translation": "Te quiero" },
     { "Language": "Portuguese", "Translation": "Eu te amo" },
     { "Language": "Cantonese", "Translation": "我愛你" },
     { "Language": "French", "Translation": "Je t’aime" },
@@ -95,6 +95,7 @@ let languages = [
 let maxAmplitudes = [];
 let playbackLengths = [];
 let waitFrames = 150;
+let showAboutInfo = true;
 
 
 // Load everything here
@@ -146,7 +147,7 @@ function setup() {
         let ink = new InkLine(palettes[i], null);
         ink.setSplatter(1, 0.4 + 1 / 100, 1);
         ink.setEndBubble(0.0);
-        ink.setAnalogueness(0.2, 10);
+        ink.setAnalogueness(0.0, 2);
         ink.setStops(0);
         lines.push(ink);
     }
@@ -156,10 +157,6 @@ function setup() {
     background(bgColor[0], bgColor[1], bgColor[2]);
 }
 
-
-
-
-
 function heartShape(t) {
     // Heart shape formula
     let x = 16 * pow(sin(t), 3);
@@ -168,6 +165,27 @@ function heartShape(t) {
 }
 
 
+function showAbout() {
+    background(bgColor[0], bgColor[1], bgColor[2]);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    fill("#4A5759");
+    text("Love's Languages", width / 2, height / 2);
+    textSize(15);
+    textAlign(CENTER, CENTER);
+    fill("#4A5759");
+    text("A generative and data art piece by Pete Cybriwsky", width / 2, height / 2 + 30);
+
+    textSize(15);
+    textAlign(CENTER, CENTER);
+    fill("#4A5759");
+    text("This piece captures our universal language, love. It features a heart, meticulously crafted from the overlapping soundwaves of 'I love you' voiced in 26 languages. These heartfelt expressions, contributed by family, friends, and even some kind-hearted strangers, echo the rich spectrum of love—from the tender bonds of family to the deep stirrings of romantic affection. Each soundwave is infused with colors drawn from the national flags of the countries where these languages resonate, weaving a vibrant tapestry of global unity and affection.", 100, height / 2 + 100, width - 200);
+
+    text("I hope to explore this piece further, adding more languages and exploring the unique flavors of different dialects and voices. It's been a real joy to discover how love is expressed around the world and to see these expressions come to life in this piece.", 100, height / 2 + 200, width - 200);
+
+    textSize(35);
+    text("Click anywhere to begin", width / 2, height - 100)
+}
 
 function shuffleArray(array1, array2) {
     for (let i = array1.length - 1; i > 0; i--) {
@@ -194,117 +212,122 @@ let indiOffsetY = 0;
 
 function draw() {
     indiOffsetY = 3 * height / 6
-    if (showBuffer && audioBuffers[languages.length - 1] != null && maxAmplitudes != []) {
-        let scale = 5; // Adjust scale to fit the heart shape in your canvas
-        angleMode(RADIANS)
-        for (let gridY = 0; gridY < rows; gridY++) {
-            for (let gridX = 0; gridX < cols; gridX++) {
-                if (gridX + (cols * gridY) < languages.length) {
-                    let bufferLength = audioBuffers[(gridX + (cols * gridY)) % audioBuffers.length].length;
-                    let data = audioBuffers[((gridX + (cols * gridY)) % audioBuffers.length)].getChannelData(0);
+    if (!showAboutInfo) {
+        if (showBuffer && audioBuffers[languages.length - 1] != null && maxAmplitudes != []) {
+            let scale = 5; // Adjust scale to fit the heart shape in your canvas
+            angleMode(RADIANS)
+            for (let gridY = 0; gridY < rows; gridY++) {
+                for (let gridX = 0; gridX < cols; gridX++) {
+                    if (gridX + (cols * gridY) < languages.length) {
+                        let bufferLength = audioBuffers[(gridX + (cols * gridY)) % audioBuffers.length].length;
+                        let data = audioBuffers[((gridX + (cols * gridY)) % audioBuffers.length)].getChannelData(0);
 
 
-                    let offsetX = gridWidth * gridX + gridWidth / 2;
-                    let offsetY = gridHeight * gridY + gridHeight / 2 + indiOffsetY;
+                        let offsetX = gridWidth * gridX + gridWidth / 2;
+                        let offsetY = gridHeight * gridY + gridHeight / 2 + indiOffsetY;
 
-                    let areaX = gridWidth * gridX
-                    let areaY = gridHeight * gridY
-                    clickableAreas.push({ x: areaX, y: areaY + indiOffsetY, width: gridWidth, height: gridHeight, index: gridX + (cols * gridY) });
+                        let areaX = gridWidth * gridX
+                        let areaY = gridHeight * gridY
+                        clickableAreas.push({ x: areaX, y: areaY + indiOffsetY, width: gridWidth, height: gridHeight, index: gridX + (cols * gridY) });
 
-                    let linePoints = [];
-                    let heartLinePoints = []; // Array for this heart's points
-                    for (let i = 0; i < bufferLength; i += inc) {
-                        let finalX, finalY;
+                        let linePoints = [];
+                        let heartLinePoints = []; // Array for this heart's points
+                        for (let i = 0; i < bufferLength; i += inc) {
+                            let finalX, finalY;
 
-                        let amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight * 0.5, gridHeight * 0.5, true);
-                        // Normalize the amplitude based on the maximum amplitude
+                            let amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight * 0.5, gridHeight * 0.5, true);
+                            // Normalize the amplitude based on the maximum amplitude
 
-                        // finalX = offsetX - gridWidth / 2 + map(i, 0, bufferLength, width/5, 4.0*width/5, true)
-                        scale = 10
-                        finalX = map(i, 0, bufferLength, width / 10, 9 * width / 10, true)
-                        finalY = indiOffsetY - 1.5 / 6 * height - amplitude
-                        heartShapePoint = heartShape(map(i, 0, bufferLength, 0, TWO_PI, true));
+                            // finalX = offsetX - gridWidth / 2 + map(i, 0, bufferLength, width/5, 4.0*width/5, true)
+                            scale = 10
+                            finalX = map(i, 0, bufferLength, width / 10, 9 * width / 10, true)
+                            finalY = indiOffsetY - 1.5 / 6 * height - amplitude
+                            heartShapePoint = heartShape(map(i, 0, bufferLength, 0, TWO_PI, true));
 
 
-                        finalX = width/2 + heartShapePoint.position.x * scale;
-                        finalY = height/2.8 + heartShapePoint.position.y * scale + amplitude
-                        linePoints.push({ x: finalX, y: finalY });
+                            finalX = width / 2 + heartShapePoint.position.x * scale;
+                            finalY = height / 2.8 + heartShapePoint.position.y * scale + amplitude
+                            linePoints.push({ x: finalX, y: finalY });
 
-                        finalX = offsetX - gridWidth / 2 + map(i, 0, bufferLength, gridWidth / 5, 4.0 * gridWidth / 5, true)
-                        amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight / 4, gridHeight / 4, true);
+                            finalX = offsetX - gridWidth / 2 + map(i, 0, bufferLength, gridWidth / 5, 4.0 * gridWidth / 5, true)
+                            amplitude = map(data[i], -1 * maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)], maxAmplitudes[(gridX + (cols * gridY)) % (languages.length)] * 1, -gridHeight / 4, gridHeight / 4, true);
 
-                        finalY = offsetY - amplitude
-                        heartLinePoints.push({ x: finalX, y: finalY });
+                            finalY = offsetY - amplitude
+                            heartLinePoints.push({ x: finalX, y: finalY });
+                        }
+
+                        allHeartPoints.push(heartLinePoints);
+                        allLinePoints.push(linePoints);
+
+                        // Draw text box under each heart
+
+                        fill(lines[(gridX + (cols * gridY)) % (languages.length)].colors[0]);
+                        textSize(fontSize);
+                        textAlign(CENTER, BOTTOM);
+                        text(languages[(gridX + (cols * gridY)) % (languages.length)].Translation, offsetX, offsetY - textOffset / 2 + gridHeight / 2);
+                        textSize(fontSize2);
+                        textAlign(CENTER, TOP);
+                        text(languages[(gridX + (cols * gridY)) % (languages.length)].Language, offsetX, offsetY + textOffset * 2 + gridHeight / 2);
                     }
-
-                    allHeartPoints.push(heartLinePoints);
-                    allLinePoints.push(linePoints);
-
-                    // Draw text box under each heart
-
-                    fill(lines[(gridX + (cols * gridY)) % (languages.length)].colors[0]);
-                    textSize(fontSize);
-                    textAlign(CENTER, BOTTOM);
-                    text(languages[(gridX + (cols * gridY)) % (languages.length)].Translation, offsetX, offsetY - textOffset / 2 + gridHeight / 2);
-                    textSize(fontSize2);
-                    textAlign(CENTER, TOP);
-                    text(languages[(gridX + (cols * gridY)) % (languages.length)].Language, offsetX, offsetY + textOffset * 2 + gridHeight / 2);
                 }
             }
+
+            fill("#4A5759");
+            textSize(fontSize * 1.25);
+            textAlign(LEFT, BOTTOM);
+            // text("Love's Languages", textBuffer, 40);
+            textAlign(LEFT, TOP);
+            showBuffer = false;
         }
 
-        fill("#4A5759");
-        textSize(fontSize * 1.25);
-        textAlign(LEFT, BOTTOM);
-        // text("Love's Languages", textBuffer, 40);
-        textAlign(LEFT, TOP);
-        showBuffer = false;
-    }
-
-    // Draw each heart using its respective points
-    for (let i = 0; i < languages.length; i++) {
-        currentLine = lines[i];
-        currentLine.setPoints(allHeartPoints[i])
-        currentLine.setAnalogueness(0.0, 5)
-        push()
-        // translate(0, height/2)
-        currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
-        currentLine.setPoints(allLinePoints[i])
-        pop()
-        currentLine.setAnalogueness(0.0, 5);
-        push()
-        currentLine.colors = palettes[i % palettes.length]
-        translate(0, -height / 8)
-        currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
-        pop()
-    }
-    frames++
-    if (waitFrames < 0) {
-        waitFrames = 150;
-        redrawVisualIndex++;
-        if (redrawVisualIndex >= clickableAreas.length) {
-            background(bgColor[0], bgColor[1], bgColor[2]);
-            showFinalVisual = true;
-            redrawVisualFrames = 0;
-
+        // Draw each heart using its respective points
+        for (let i = 0; i < languages.length; i++) {
+            currentLine = lines[i];
+            currentLine.setPoints(allHeartPoints[i])
+            currentLine.setAnalogueness(0.0, 2)
+            push()
+            // translate(0, height/2)
+            currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
+            currentLine.setPoints(allLinePoints[i])
+            pop()
+            currentLine.setAnalogueness(0.0, 2);
+            push()
+            currentLine.colors = palettes[i % palettes.length]
+            translate(0, -height / 8)
+            currentLine.animateLine(null, null, null, null, frames * inc, (frames + 1) * inc)
+            pop()
         }
-        else {
-            let area = clickableAreas[redrawVisualIndex % clickableAreas.length];
-            audioFiles[redrawVisualIndex].play();
-            redrawVisual = true;
-            redrawVisualArea = area;
-            redrawVisualFrames = 0;
-            redrawFrameText = true
+        frames++
+        if (waitFrames < 0) {
+            waitFrames = 150;
+            redrawVisualIndex++;
+            if (redrawVisualIndex >= clickableAreas.length) {
+                background(bgColor[0], bgColor[1], bgColor[2]);
+                showFinalVisual = true;
+                redrawVisualFrames = 0;
+
+            }
+            else {
+                let area = clickableAreas[redrawVisualIndex % clickableAreas.length];
+                audioFiles[redrawVisualIndex].play();
+                redrawVisual = true;
+                redrawVisualArea = area;
+                redrawVisualFrames = 0;
+                redrawFrameText = true
+            }
+        }
+        waitFrames--;
+
+        if (redrawVisual && showFinalVisual == false) {
+            redrawVisualForArea(redrawVisualArea, redrawVisualIndex);
+        }
+
+        if (showFinalVisual) {
+            finalVisual()
         }
     }
-    waitFrames--;
-
-    if (redrawVisual && showFinalVisual == false) {
-        redrawVisualForArea(redrawVisualArea, redrawVisualIndex);
-    }
-
-    if (showFinalVisual) {
-        finalVisual()
+    else {
+        showAbout();
     }
 }
 
@@ -321,7 +344,7 @@ let showFinalVisual = false;
 function calculateGrid() {
     cols = 9
     rows = Math.ceil(totalLines / cols)
-    minGridHeight = (0.4* canvasHeight) / rows
+    minGridHeight = (0.4 * canvasHeight) / rows
 
     gridWidth = windowWidth / cols;
     gridHeight = minGridHeight;
@@ -410,28 +433,34 @@ function finalVisual() {
         textSize(fontSize * 4);
         textAlign(CENTER, CENTER);
         fill("#4A5759");
-        text("Love's Languages", width / 2, 3.5*height / 4);
+        text("Love's Languages", width / 2, 3.5 * height / 4);
 
         noLoop();
     }
 }
 
 function mouseClicked() {
-    for (let area of clickableAreas) {
-        if (mouseX > area.x && mouseX < area.x + area.width &&
-            mouseY > area.y && mouseY < area.y + area.height) {
-            // Play the corresponding audio file
-            waitFrames = 150;
-            fill(bgColor[0], bgColor[1], bgColor[2])
-            noStroke()
-            // rect(area.x, area.y, area.width, area.height);
-            audioFiles[area.index].play();
-            redrawVisual = true;
-            redrawVisualIndex = area.index;
-            redrawVisualArea = area;
-            redrawVisualFrames = 0;
-            redrawFrameText = true
-            break; // Stop checking further if one match is found
+    if (showAboutInfo) {
+        showAboutInfo = false;
+        background(bgColor[0], bgColor[1], bgColor[2]);
+    }
+    else {
+        for (let area of clickableAreas) {
+            if (mouseX > area.x && mouseX < area.x + area.width &&
+                mouseY > area.y && mouseY < area.y + area.height) {
+                // Play the corresponding audio file
+                waitFrames = 150;
+                fill(bgColor[0], bgColor[1], bgColor[2])
+                noStroke()
+                // rect(area.x, area.y, area.width, area.height);
+                audioFiles[area.index].play();
+                redrawVisual = true;
+                redrawVisualIndex = area.index;
+                redrawVisualArea = area;
+                redrawVisualFrames = 0;
+                redrawFrameText = true
+                break; // Stop checking further if one match is found
+            }
         }
     }
 }
