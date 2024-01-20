@@ -134,7 +134,7 @@ let canvasHeight = 0;
 function setup() {
     // shuffleArray(languages);
     frameRate(30);
-    pixelDensity(1);
+    pixelDensity(2);
     createCanvas(windowWidth, windowHeight);
     canvasHeight = windowHeight;
     watercolorLayer = createGraphics(1200, 800);
@@ -185,7 +185,7 @@ let gridWidth = minGridWidth; // Width of each cell
 let gridHeight = minGridHeight; // Height of each cell
 let rows, cols = 0; // Number of rows and columns in our system
 let textBuffer = 10;
-let fontSize = 20;
+let fontSize = 20 * 0.6
 let fontSize2 = 1 * fontSize;
 let indiOffsetY = 0;
 
