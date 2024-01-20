@@ -466,6 +466,10 @@ function mouseClicked() {
     }
 }
 
+function touchStarted() {
+    mouseClicked();
+}
+
 
 function windowResized() {
     calculateGrid();
