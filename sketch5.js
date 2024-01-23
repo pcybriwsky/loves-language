@@ -434,8 +434,6 @@ function finalVisual() {
         textSize(fontSize * 4);
         textAlign(CENTER, CENTER);
         fill("#4A5759");
-        // text("Love's Languages", width / 2, 3.5 * height / 4);
-
         noLoop();
     }
 }
