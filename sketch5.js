@@ -77,7 +77,7 @@ let languages = [
     { "Language": "German", "Translation": "Ich liebe dich" },
     { "Language": "Korean", "Translation": "사랑해" },
     { "Language": "Japanese", "Translation": "だいすきだよ" },
-    { "Language": "Ukrainian", "Translation": "Я тебе кохаю" },
+    { "Language": "Ukrainian", "Translation": "я тебе люблю" },
     { "Language": "Malay", "Translation": "Saya sayang awak" },
     { "Language": "Arabic", "Translation": "أحبك" },
     { "Language": "Hindi", "Translation": "मैं तुमसे प्यार करता हूँ" },
